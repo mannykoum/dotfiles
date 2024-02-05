@@ -1,0 +1,73 @@
+#!usr/bin/env bash
+
+# function to copy symlinks
+cpln () {   # arg1: TARGET arg2: NAME
+    ln -s $(readlink -f $1) $2
+    return $?
+}
+
+cheat () {
+    curl "cheat.sh/$@"
+}
+
+genwifiqr () {
+out="${1:-wifi-card.pdf}"
+read -rp "SSID: " ssid
+read -rsp "Password: " pass
+echo -e "\nGenerating PDF..."
+{
+cat << EOF
+<table>
+<tr>
+<td><img src="data:image/png;base64,$(qrencode -o - -t png "WIFI:T:WPA;S:$ssid;P:$pass;;" | base64)"></td>
+<td><span>SSID: $ssid</span><br><span>Password: $pass</span></td>
+</tr>
+</table>
+<p>
+<img width=16 height=16 src="https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-64/1f4f8.png">
+<img width=16 height=16 src="https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-64/1f4f1.png">
+Point your phone's camera at the QR Code to connect automatically.
+</p>
+EOF
+} | pandoc --pdf-engine=xelatex -f html -t pdf -o "$out"
+    echo "$out"
+}
+
+so_xilinx () {
+
+source /tools/Xilinx/Vitis/2020.2/settings64.sh
+source /tools/Xilinx/Vivado/2020.2/settings64.sh
+source /tools/Xilinx/PetaLinux/settings.sh
+
+}
+
+# function to rm all files from a repo and then the directory
+rmall () {
+    rm -rf $1/*
+    rm -rf $1/.*
+    rmdir $1
+    return $?
+}
+
+rmd () {
+  pandoc $1 | lynx -stdin
+}
+
+treedu() {
+  local depth=''
+
+  while getopts "L:" opt ; do
+      case "$opt" in
+          L) depth="$OPTARG" ;;
+      esac
+  done
+
+  shift "$((OPTIND-1))"
+
+  if [ -z "$depth" ] ; then
+      tree --du -d -shaC "$@"
+  else   
+      local PATTERN='(  *[^ ]* ){'"$depth"'}\['
+      tree --du -d -shaC "$@" | grep -Ev "$PATTERN"
+  fi
+}
