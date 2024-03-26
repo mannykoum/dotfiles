@@ -130,6 +130,9 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/local/cuda/ex
 # export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/local/cuda-9.0/lib64
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/local/cuda-10.1/lib64
 
+# for ffmpeg to work correctly
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
+
 # Add in some colour to your life
 export GREP_OPTIONS='--color=auto'
 
@@ -222,16 +225,22 @@ source /opt/ros/noetic/setup.bash
 export ARENA_ROOT=~/ROS/ArenaSDK_Linux_x64
 export ARENA_CONFIG_ROOT=~/ROS/arena_camera_ros/catkin_ws
 
-# env vars for config files
-CONF="~/.config"
+# env vars for config files, symlinks followed in case of gnu stow
+CONF="/home/mannykoum/.config"
 export NVIM_CONFIG="$CONF/nvim/init.lua"
+export NVIM_CONFIG=$(readlink -f $NVIM_CONFIG)
 export TMUX_CONFIG="$CONF/tmux/tmux.conf"
-export TMUX_CONF="$CONF/tmux/tmux.conf"
+export TMUX_CONFIG=$(readlink -f $TMUX_CONFIG)
 export KITTY_CONFIG="$CONF/kitty/kitty.conf"
+export KITTY_CONFIG=$(readlink -f $KITTY_CONFIG)
 export FISH_CONFIG="$CONF/fish/config.fish"
+export FISH_CONFIG=$(readlink -f $FISH_CONFIG)
 
+# if alacritty
 source /home/mannykoum/programs/alacritty/extra/completions/alacritty.bash
 
 # default editor
 export EDITOR="nvim"
 
+# z - jump around
+. /home/mannykoum/programs/z/z.sh
