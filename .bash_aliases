@@ -10,7 +10,7 @@ alias unity3d='~/Unity-2018.2.2f1/Editor/Unity'
 alias upd='sudo apt update'
 alias upg='sudo apt -y upgrade'
 # to make tmux display colors correctly
-alias tmux="tmux -f $TMUX_CONFIG"
+alias tmux="tmux" # -f $TMUX_CONFIG"
 alias matlabq="matlab -nodesktop -nosplash"
 alias gpureload="sudo rmmod nvidia_uvm ; sudo modprobe nvidia_uvm"
 alias datacenter="/home/shared/Komodo\ Duo/data-center-linux-x86_64-v6.73-1/Data\ Center"
