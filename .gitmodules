@@ -1,5 +1,5 @@
 [submodule ".config/tmux/plugins/tpm"]
-	path = .config/tmux/plugins/tpm
+	path = tmux/dot-config/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
 [submodule "nvim/dot-config/nvim"]
 	path = nvim/dot-config/nvim
