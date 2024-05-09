@@ -195,18 +195,16 @@ unset GREP_OPTIONS
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# Libero License path
-export LIBERO_PATH="/usr/local/microsemi/LiberoSoCv2022.1/Libero/bin"
-export PATH="${LIBERO_PATH}:${PATH}"
-export LM_LICENSE_FILE="/licenses/License.dat"
-export LM_LICENSE_FILE=1702@infinet:$LM_LICENSE_FILE
-export SNPSLMD_LICENSE_FILE=1702@infinet:$LM_LICENSE_FILE
-
 # Go path for projects
-export GOPATH=/home/mannykoum/go
+# if go is installed
+if command -v go &> /dev/null; then
+    export GOPATH=~/go
+    export PATH=$PATH:$GOPATH/bin
+fi
 
 # My local application binaries
 USER_PATH="~/Applications/bin"
+USER_PATH="${USER_PATH}:~/.bin"
 export PATH="${USER_PATH}:${PATH}"
 
 export RUSTC_WRAPPER=sccache
@@ -214,14 +212,19 @@ export RUSTC_WRAPPER=sccache
 # Starship prompt
 eval "$(starship init bash)"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if command -v nvm &> /dev/null; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
 
+# enable autocd
 shopt -s autocd
 
 # ROS
-source /opt/ros/noetic/setup.bash
+[ -f /opt/ros/noetic/setup.bash ] && source /opt/ros/noetic/setup.bash
+[ -f /opt/ros/melodic/setup.bash ] && source /opt/ros/melodic/setup.bash
+[ -f /opt/ros/kinetic/setup.bash ] && source /opt/ros/kinetic/setup.bash
 export ARENA_ROOT=~/ROS/ArenaSDK_Linux_x64
 export ARENA_CONFIG_ROOT=~/ROS/arena_camera_ros/catkin_ws
 
@@ -235,12 +238,99 @@ export KITTY_CONFIG="$CONF/kitty/kitty.conf"
 export KITTY_CONFIG=$(readlink -f $KITTY_CONFIG)
 export FISH_CONFIG="$CONF/fish/config.fish"
 export FISH_CONFIG=$(readlink -f $FISH_CONFIG)
+export STARSHIP_CONFIG="$CONF/starship.toml"
+export STARSHIP_CONFIG=$(readlink -f $STARSHIP_CONFIG)
+export I3_CONFIG="$CONF/i3/config"
+export I3_CONFIG=$(readlink -f $I3_CONFIG)
 
 # if alacritty
-source /home/mannykoum/programs/alacritty/extra/completions/alacritty.bash
+if command -v alacritty &> /dev/null; then
+    export ALACRITTY_CONFIG="$CONF/alacritty/alacritty.yml"
+    export ALACRITTY_CONFIG=$(readlink -f $ALACRITTY_CONFIG)
+    source /home/mannykoum/programs/alacritty/extra/completions/alacritty.bash
+fi
 
 # default editor
 export EDITOR="nvim"
 
 # z - jump around
 . /home/mannykoum/programs/z/z.sh
+
+# fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# if Microchip/SoftConsole is installed, add to PATH
+if [ -d "/opt/Microchip/SoftConsole-v2022.2-RISC-V-747" ]; then
+    export SC_INSTALL_DIR="/opt/Microchip/SoftConsole-v2022.2-RISC-V-747"
+    export PATH="${SC_INSTALL_DIR}/riscv-unknown-elf-gcc/bin:${PATH}"
+else
+    echo "SoftConsole not installed or not in the right path"
+fi
+
+# Libero License path
+export LIBERO_PATH="/usr/local/microchip/Libero_SoC_v2022.2/Libero/"
+export PATH="${LIBERO_PATH}bin64:${PATH}"
+export PATH="${LIBERO_PATH}bin:${PATH}"
+export LM_LICENSE_FILE="/licenses/License.dat"
+export LM_LICENSE_FILE=1702@infinet:$LM_LICENSE_FILE
+export SNPSLMD_LICENSE_FILE=1702@infinet:$LM_LICENSE_FILE
+
+# if fpgenprog is installed, export to env
+if command -v fpgenprog &> /dev/null; then
+    export FPGENPROG=$(which fpgenprog)
+else
+    echo "fpgenprog not installed or not in the right path"
+fi
+
+# if hss-payload-generator is not installed print a message
+if ! command -v hss-payload-generator &> /dev/null; then
+    echo "hss-payload-generator not installed or not in the right path"
+fi
+
+# check whether npm, fd, make, gcc, meson, ripgrep, unzip, git, xclip, neovim is installed
+# if not, install them
+# if ! command -v npm &> /dev/null; then
+#     echo "npm not found, installing..."
+#     sudo apt install npm
+# fi
+
+if ! command -v fd &> /dev/null; then
+    echo "fd not found, installing..."
+    sudo apt install fd-find
+fi
+
+if ! command -v make &> /dev/null; then
+    echo "make not found, installing..."
+    sudo apt install make
+fi
+
+if ! command -v gcc &> /dev/null; then
+    echo "gcc not found, installing..."
+    sudo apt install gcc
+fi
+
+if ! command -v meson &> /dev/null; then
+    echo "meson not found, installing..."
+    sudo apt install meson
+fi
+
+if ! command -v rgrep &> /dev/null; then
+    echo "ripgrep not found, installing..."
+    sudo apt install ripgrep
+fi
+
+if ! command -v unzip &> /dev/null; then
+    echo "unzip not found, installing..."
+    sudo apt install unzip
+fi
+
+if ! command -v git &> /dev/null; then
+    echo "git not found, installing..."
+    sudo apt install git
+fi
+
+if ! command -v xclip &> /dev/null; then
+    echo "xclip not found, installing..."
+    sudo apt install xclip
+fi
+

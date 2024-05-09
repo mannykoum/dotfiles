@@ -71,3 +71,26 @@ treedu() {
       tree --du -d -shaC "$@" | grep -Ev "$PATTERN"
   fi
 }
+
+# function to use xclip to copy to clipboard
+# usage: clip "string" 
+# or: echo "string" | clip
+clip() {
+    if [ -t 0 ]; then
+        echo -n $1 | xclip -selection clipboard
+    else
+        xclip -selection clipboard
+    fi
+}
+
+# function to use fzf to search processes and kill them
+# Kill process using fzf
+fkill() {
+    local pid
+    pid=$(ps -ef | sed 1d | fzf -m --header='Use TAB to select multiple processes' --reverse | awk '{print $2}')
+
+    if [ "x$pid" != "x" ]
+    then
+        echo $pid | xargs kill -${1:-9}
+    fi
+}
