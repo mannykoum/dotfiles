@@ -3,7 +3,6 @@ format = """
 $os\
 $username\
 $hostname\
-[](bg:#9A348E fg:#DA627D)\
 [](bg:#DA627D fg:#9A348E)\
 $directory\
 [](fg:#DA627D bg:#FCA17D)\
@@ -37,14 +36,15 @@ $time\
 # and use the os module below
 [username]
 # show_always = true
-style_user = "bg:#9A348E"
+style_user = "bold bg:#9A348E"
 style_root = "bg:#9A348E"
-format = '[$user ]($style)'
+format = '[$user]($style)'
 disabled = false
 
 [hostname]
 ssh_only = true
-format = '[$ssh_symbol](bold blue) on [$hostname](bold red) '
+format = '[@$hostname]($style)'
+style = "bg:#9A348E"
 # detect_env_vars = ['!TMUX', 'SSH_CONNECTION']
 disabled = false
 
