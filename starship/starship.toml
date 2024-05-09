@@ -34,10 +34,16 @@ $time\
 # You can also replace your username with a neat symbol like   or disable this
 # and use the os module below
 [username]
-show_always = true
+# show_always = true
 style_user = "bg:#9A348E"
 style_root = "bg:#9A348E"
 format = '[$user ]($style)'
+disabled = false
+
+[hostname]
+ssh_only = true
+format = '[$ssh_symbol](bold blue) on [$hostname](bold red) '
+detect_env_vars = ['!TMUX', 'SSH_CONNECTION']
 disabled = false
 
 # An alternative to the username module which displays a symbol that
