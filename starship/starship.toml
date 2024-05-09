@@ -2,6 +2,8 @@ format = """
 [](#9A348E)\
 $os\
 $username\
+$hostname\
+[](bg:#9A348E fg:#DA627D)\
 [](bg:#DA627D fg:#9A348E)\
 $directory\
 [](fg:#DA627D bg:#FCA17D)\
@@ -43,7 +45,7 @@ disabled = false
 [hostname]
 ssh_only = true
 format = '[$ssh_symbol](bold blue) on [$hostname](bold red) '
-detect_env_vars = ['!TMUX', 'SSH_CONNECTION']
+# detect_env_vars = ['!TMUX', 'SSH_CONNECTION']
 disabled = false
 
 # An alternative to the username module which displays a symbol that
