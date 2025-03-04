@@ -271,7 +271,7 @@ fi
 export LIBERO_PATH="/usr/local/microchip/Libero_SoC_v2022.2/Libero/"
 export PATH="${LIBERO_PATH}bin64:${PATH}"
 export PATH="${LIBERO_PATH}bin:${PATH}"
-export LM_LICENSE_FILE="/licenses/License.dat"
+export LM_LICENSE_FILE="$HOME/License.dat"
 export LM_LICENSE_FILE=1702@infinet:$LM_LICENSE_FILE
 export SNPSLMD_LICENSE_FILE=1702@infinet:$LM_LICENSE_FILE
 
@@ -334,3 +334,5 @@ if ! command -v xclip &> /dev/null; then
     sudo apt install xclip
 fi
 
+# super important
+fortune | cowsay -f moofasa
