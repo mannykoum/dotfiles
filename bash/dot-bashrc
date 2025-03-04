@@ -97,20 +97,6 @@ alias l='ls -CF'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
-# Function definitions
-if [ -f ~/.bash_functions ]; then
-    . ~/.bash_functions
-fi
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -191,7 +177,6 @@ fi
 # Get rid of that dreaded warning
 unset GREP_OPTIONS
 
-. "$HOME/.cargo/env"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
@@ -254,7 +239,8 @@ fi
 export EDITOR="nvim"
 
 # z - jump around
-. /home/mannykoum/programs/z/z.sh
+# if z.sh exists, source it
+[ -f $HOME/programs/z/z.sh ] && . $HOME/programs/z/z.sh
 
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -294,7 +280,7 @@ fi
 #     sudo apt install npm
 # fi
 
-if ! command -v fd &> /dev/null; then
+if ! command -v fdfind &> /dev/null; then
     echo "fd not found, installing..."
     sudo apt install fd-find
 fi
@@ -335,4 +321,20 @@ if ! command -v xclip &> /dev/null; then
 fi
 
 # super important
-fortune | cowsay -f moofasa
+# fortune | cowsay -f moofasa
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# Function definitions
+if [ -f ~/.bash_functions ]; then
+    . ~/.bash_functions
+fi
+
+. "$HOME/.cargo/env"
