@@ -215,6 +215,7 @@ export ARENA_CONFIG_ROOT=~/ROS/arena_camera_ros/catkin_ws
 
 # env vars for config files, symlinks followed in case of gnu stow
 CONF="/home/mannykoum/.config"
+export XDG_CONFIG_HOME="$CONF"
 export NVIM_CONFIG="$CONF/nvim/init.lua"
 export NVIM_CONFIG=$(readlink -f $NVIM_CONFIG)
 export TMUX_CONFIG="$CONF/tmux/tmux.conf"
