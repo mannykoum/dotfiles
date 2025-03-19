@@ -339,3 +339,8 @@ if [ -f ~/.bash_functions ]; then
 fi
 
 . "$HOME/.cargo/env"
+
+# if wsl2, set WGPU_BACKEND to vulkan
+if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
+    export WGPU_BACKEND="vulkan"
+fi
