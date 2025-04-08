@@ -1,5 +1,31 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# My local application binaries
+USER_PATH="~/Applications/bin"
+USER_PATH="${USER_PATH}:~/.bin"
+export PATH="${USER_PATH}:${PATH}"
+
+# CUDA paths
+export PATH=/usr/local/cuda-10.1/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/local/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/local/cuda/extras/CUPTI/lib64
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/local/cuda-10.1/lib64
+
+# ffmpeg path
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
+
+# Go path
+if command -v go &> /dev/null; then
+    export GOPATH=~/go
+    export PATH=$PATH:$GOPATH/bin
+fi
+
+# Rust sccache
+export RUSTC_WRAPPER=sccache
+
+# Default editor
+export EDITOR="nvim"
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -72,6 +98,34 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
 
+# ROS setup
+[ -f /opt/ros/noetic/setup.zsh ] && source /opt/ros/noetic/setup.zsh
+[ -f /opt/ros/melodic/setup.zsh ] && source /opt/ros/melodic/setup.zsh
+[ -f /opt/ros/kinetic/setup.zsh ] && source /opt/ros/kinetic/setup.zsh
+export ARENA_ROOT=~/ROS/ArenaSDK_Linux_x64
+export ARENA_CONFIG_ROOT=~/ROS/arena_camera_ros/catkin_ws
+
+# Config file paths
+CONF="/home/mannykoum/.config"
+export NVIM_CONFIG="$CONF/nvim/init.lua"
+export NVIM_CONFIG=$(readlink -f $NVIM_CONFIG)
+export TMUX_CONFIG="$CONF/tmux/tmux.conf"
+export TMUX_CONFIG=$(readlink -f $TMUX_CONFIG)
+export KITTY_CONFIG="$CONF/kitty/kitty.conf"
+export KITTY_CONFIG=$(readlink -f $KITTY_CONFIG)
+export FISH_CONFIG="$CONF/fish/config.fish"
+export FISH_CONFIG=$(readlink -f $FISH_CONFIG)
+export STARSHIP_CONFIG="$CONF/starship.toml"
+export STARSHIP_CONFIG=$(readlink -f $STARSHIP_CONFIG)
+export I3_CONFIG="$CONF/i3/config"
+export I3_CONFIG=$(readlink -f $I3_CONFIG)
+
+# Alacritty config
+if command -v alacritty &> /dev/null; then
+    export ALACRITTY_CONFIG="$CONF/alacritty/alacritty.yml"
+    export ALACRITTY_CONFIG=$(readlink -f $ALACRITTY_CONFIG)
+fi
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -106,4 +160,26 @@ source $ZSH/oh-my-zsh.sh
 # Source aliases and functions
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
 [ -f ~/.zsh_functions ] && source ~/.zsh_functions
+
+# z - jump around
+[ -f $HOME/programs/z/z.sh ] && . $HOME/programs/z/z.sh
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Starship prompt
+eval "$(starship init zsh)"
+
+# WSL2 specific settings
+if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
+    export WGPU_BACKEND="vulkan"
+fi
+
+# Check for essential tools
+if ! command -v fdfind &> /dev/null; then
+    echo "fd not found, consider installing: sudo apt install fd-find"
+fi
+if ! command -v rg &> /dev/null; then
+    echo "ripgrep not found, consider installing: sudo apt install ripgrep"
+fi
 
