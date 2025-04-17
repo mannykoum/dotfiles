@@ -5,6 +5,7 @@ export SHELL=$(which zsh)
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 USER_PATH="~/Applications/bin"
 USER_PATH="${USER_PATH}:~/.bin"
+USER_PATH="${USER_PATH}:/snap/bin"
 export PATH="${USER_PATH}:${PATH}"
 
 # CUDA paths
