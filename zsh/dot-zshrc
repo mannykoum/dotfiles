@@ -173,7 +173,7 @@ source $ZSH/oh-my-zsh.sh
 # z - jump around
 [ -f $HOME/programs/z/z.sh ] && . $HOME/programs/z/z.sh
 
-# fzf
+# fzf keybindings
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Starship prompt
@@ -191,4 +191,5 @@ fi
 if ! command -v rg &> /dev/null; then
     echo "ripgrep not found, consider installing: sudo apt install ripgrep"
 fi
+
 
