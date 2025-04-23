@@ -2,9 +2,9 @@ alias tf='source ~/tensorflow/bin/activate'
 alias fr='source ~/far-range/bin/activate'
 alias tf2='source ~/tensorflow-2/bin/activate'
 alias asenv='source ~/airsim/bin/activate'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
+alias -g ..='cd ..'
+alias -g ...='cd ../..'
+alias -g ....='cd ../../..'
 alias matl='matlab -nodisplay'
 alias unity3d='~/Unity-2018.2.2f1/Editor/Unity'
 alias upd='sudo apt update'
@@ -20,3 +20,12 @@ alias bat="batcat"
 alias vim="nvim"
 alias 'bash?'="batcat $HOME/.cheatsheets/bash"
 alias fd="fdfind"
+
+# suffix aliases
+alias -s py=python3
+alias -s rs=nvim
+alias -s md=nvim
+alias -s c=nvim
+alias -s h=nvim
+alias -s cpp=nvim
+alias -s hpp=nvim
