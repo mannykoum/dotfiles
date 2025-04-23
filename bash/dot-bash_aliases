@@ -16,7 +16,10 @@ alias gpureload="sudo rmmod nvidia_uvm ; sudo modprobe nvidia_uvm"
 alias datacenter="/home/shared/Komodo\ Duo/data-center-linux-x86_64-v6.73-1/Data\ Center"
 alias python="python3"
 alias whoson="w -h|awk '{a[\$1]++} END{for(b in a) print b}'"
-alias bat="batcat"
+# if batcat is installed
+if command -v batcat &> /dev/null; then
+	alias bat="batcat"
+fi
 alias vim="nvim"
-alias 'bash?'="batcat $HOME/.cheatsheets/bash"
+alias 'bash?'="bat $HOME/.cheatsheets/bash"
 alias fd="fdfind"
