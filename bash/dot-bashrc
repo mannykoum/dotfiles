@@ -190,6 +190,7 @@ fi
 # My local application binaries
 USER_PATH="~/Applications/bin"
 USER_PATH="${USER_PATH}:~/.bin"
+USER_PATH="${USER_PATH}:/snap/bin"
 export PATH="${USER_PATH}:${PATH}"
 
 export RUSTC_WRAPPER=sccache
@@ -215,6 +216,7 @@ export ARENA_CONFIG_ROOT=~/ROS/arena_camera_ros/catkin_ws
 
 # env vars for config files, symlinks followed in case of gnu stow
 CONF="/home/mannykoum/.config"
+export XDG_CONFIG_HOME="$CONF"
 export NVIM_CONFIG="$CONF/nvim/init.lua"
 export NVIM_CONFIG=$(readlink -f $NVIM_CONFIG)
 export TMUX_CONFIG="$CONF/tmux/tmux.conf"
@@ -336,6 +338,9 @@ fi
 if [ -f ~/.bash_functions ]; then
     . ~/.bash_functions
 fi
+
+# fzf bash completion
+eval "$(fzf --bash)"
 
 . "$HOME/.cargo/env"
 
