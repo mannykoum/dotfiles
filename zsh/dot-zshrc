@@ -43,7 +43,8 @@ autoload -U promptinit; promptinit
 
 # ZSH_THEME="robbyrussell"
 # ZSH_THEME="agnoster"
-ZSH_THEME="pure/pure"
+# ZSH_THEME="pure/pure"
+ZSH_THEME="sunaku"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
