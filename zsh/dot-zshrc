@@ -24,7 +24,9 @@ if command -v go &> /dev/null; then
 fi
 
 # Rust sccache
-export RUSTC_WRAPPER=sccache
+# export RUSTC_WRAPPER=sccache
+# Rust tools env sourcing
+source $HOME/.cargo/env
 
 # Default editor
 export EDITOR="nvim"
@@ -194,3 +196,7 @@ if ! command -v rg &> /dev/null; then
 fi
 
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
