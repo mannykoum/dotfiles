@@ -46,7 +46,7 @@ autoload -U promptinit; promptinit
 # ZSH_THEME="robbyrussell"
 # ZSH_THEME="agnoster"
 # ZSH_THEME="pure/pure"
-ZSH_THEME="sunaku"
+# ZSH_THEME="sunaku"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -180,7 +180,7 @@ source $ZSH/oh-my-zsh.sh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Starship prompt
-# eval "$(starship init zsh)"
+eval "$(starship init zsh)"
 
 # WSL2 specific settings
 if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
@@ -188,7 +188,7 @@ if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
 fi
 
 # Check for essential tools
-if ! command -v fdfind &> /dev/null; then
+if ! command -v fd &> /dev/null && ! command -v fdfind &> /dev/null; then
     echo "fd not found, consider installing: sudo apt install fd-find"
 fi
 if ! command -v rg &> /dev/null; then

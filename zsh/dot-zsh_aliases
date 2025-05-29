@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 alias tf='source ~/tensorflow/bin/activate'
 alias fr='source ~/far-range/bin/activate'
 alias tf2='source ~/tensorflow-2/bin/activate'
@@ -22,7 +23,7 @@ if command -v batcat &> /dev/null; then
 fi
 alias vim="nvim"
 alias 'bash?'="bat $HOME/.cheatsheets/bash"
-alias fd="fdfind"
+# alias fd="fdfind"
 
 # suffix aliases
 alias -s py=python3
