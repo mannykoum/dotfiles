@@ -25,6 +25,7 @@ $scala\
 $docker_context\
 [](fg:#06969A bg:#33658A)\
 $time\
+$cmd_duration\
 [](fg:#33658A)\
 [\n> ](bold fg:#33658A)\
 """
@@ -147,7 +148,13 @@ style = "bg:#86BBD8"
 format = '[ $symbol ($version) ]($style)'
 
 [time]
-disabled = false
+disabled = true
 time_format = "%R" # Hour:Minute Format
 style = "bg:#33658A"
-format = '[ ♥ $time ]($style)'
+format = '[ $time ]($style)'
+
+[cmd_duration]
+min_time = 500
+show_milliseconds = true
+style = "bg:#33658A"
+format = '[ $duration]($style)'

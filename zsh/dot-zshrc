@@ -1,6 +1,9 @@
 # Declare SHELL
 export SHELL=$(which zsh)
 
+# set XDG config home
+export XDG_CONFIG_HOME="$HOME/.config"
+
 # My local application binaries
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 USER_PATH="~/Applications/bin"
@@ -22,6 +25,9 @@ if command -v go &> /dev/null; then
     export GOPATH=~/go
     export PATH=$PATH:$GOPATH/bin
 fi
+
+# Ruby gem path
+export GEM_HOME="$HOME/.gem/ruby/3.0.0"
 
 # Rust sccache
 # export RUSTC_WRAPPER=sccache
@@ -195,7 +201,8 @@ if ! command -v rg &> /dev/null; then
     echo "ripgrep not found, consider installing: sudo apt install ripgrep"
 fi
 
-
+# Zoxide setup
+eval "$(zoxide init zsh)"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

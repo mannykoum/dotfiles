@@ -24,6 +24,7 @@ fi
 alias vim="nvim"
 alias 'bash?'="bat $HOME/.cheatsheets/bash"
 # alias fd="fdfind"
+alias datename='date +"%Y-%m-%d-%H-%M-%S"'
 
 # suffix aliases
 alias -s py=python3

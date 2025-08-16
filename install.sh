@@ -76,6 +76,7 @@ for package in "$@"; do
         manage_package "nvim" "$HOME/.config/nvim"
         manage_package "tmux" "$HOME/.config/tmux"
         manage_package "starship" "$HOME/.config"
+        manage_package "foot" "$HOME/.config/foot"
         break
     else
         case $package in
@@ -90,6 +91,9 @@ for package in "$@"; do
                 ;;
             starship )
                 manage_package "$package" "$HOME/.config"
+                ;;
+            foot )
+                manage_package "$package" "$HOME/.config/foot"
                 ;;
             * )
                 echo "Unknown package: $package" >&2
