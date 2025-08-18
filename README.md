@@ -7,6 +7,17 @@ A place for my dotfiles to call home
 - [GNU Stow](https://www.gnu.org/software/stow/)
 - [Git](https://git-scm.com/)
 
+## Prerequisites
+
+These packages are used by specific stow groups. Install only what you need:
+
+- git-delta: pager/diff for Git config (`core.pager = delta`).
+- Zsh + Oh My Zsh: required for the `zsh` package.
+- Neovim: required for the `nvim` package.
+- Tmux: required for the `tmux` package.
+- Starship: required for the `starship` package.
+- foot terminal: required for the `foot` package.
+
 ## Installation
 
 Clone the repo:
