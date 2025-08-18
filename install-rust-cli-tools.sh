@@ -46,7 +46,7 @@ rust_tool_packages=(
   "mask"          # CLI task runner using markdown
   "mprocs"        # Run multiple commands in parallel
   "presenterm"    # Terminal slideshow tool
-  "kondo-cli"     # Project artifact cleaner
+  "kondo"         # Project artifact cleaner
   "bob-nvim"      # Neovim version manager
   "rtx-cli"       # Polyglot version manager (now superseded by 'mise')
 )
@@ -60,10 +60,8 @@ tool_command_map=(
   [dua-cli]="dua"
   [yazi-fm]="yazi"
   [helix]="hx"
-  [rusty-man]="rman"
   [git-delta]="delta"
   [ripgrep_all]="rga"
-  [kondo-cli]="kondo"
   [bob-nvim]="bob"
   [rtx-cli]="rtx"
 )
@@ -122,7 +120,7 @@ check_and_install_tool() {
   fi
 
   print_message "Installing '$tool_package_name' (provides: $display_command_name)..."
-  if cargo install "$tool_package_name"; then
+  if cargo install "$tool_package_name" --locked; then
     print_message "'$tool_package_name' installed successfully."
     # Special instructions after install
     if [[ "$tool_package_name" == "starship" ]]; then
