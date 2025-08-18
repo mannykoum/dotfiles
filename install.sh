@@ -10,7 +10,7 @@ show_help() {
     echo "  -u        Uninstall the specified dotfiles package(s)."
     echo
     echo "Arguments:"
-    echo "  package   The name of the dotfiles package to install or uninstall. Can be 'zsh', 'bash', 'nvim', 'tmux', or 'all'."
+    echo "  package   The name of the dotfiles package to install or uninstall. Can be 'zsh', 'bash', 'git', 'nvim', 'tmux', 'starship', 'foot', or 'all'."
     echo
     echo "Example:"
     echo "  $0 -v -u all     Uninstall all dotfiles packages with verbose output."
@@ -73,6 +73,7 @@ for package in "$@"; do
     if [ "$package" = "all" ]; then
         manage_package "zsh" "$HOME"
         manage_package "bash" "$HOME"
+        manage_package "git" "$HOME"
         manage_package "nvim" "$HOME/.config/nvim"
         manage_package "tmux" "$HOME/.config/tmux"
         manage_package "starship" "$HOME/.config"
@@ -85,6 +86,9 @@ for package in "$@"; do
                 ;;
             bash )
                 manage_package "bash" "$HOME"
+                ;;
+            git )
+                manage_package "git" "$HOME"
                 ;;
             nvim | tmux )
                 manage_package "$package" "$HOME/.config/$package"
@@ -102,4 +106,3 @@ for package in "$@"; do
         esac
     fi
 done
-

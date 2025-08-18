@@ -1,0 +1,31 @@
+[user]
+	name = Manos Koumandakis
+	email = manos@infiniteorbits.io
+[core]
+	pager = delta
+	editor = nvim
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	side-by-side = true
+[merge]
+	conflictStyle = zdiff3
+[push]
+	default = simple
+	defaultBranch = main
+	autoSetupRemote = true
+[commit]
+	verbose = true
+[rerere]
+	autostash = true
+	enabled = true
+[help]
+	autocorrect = 10
+[status]
+	submoduleSummary = true
+[submodule]
+	recurse = true
+[diff]
+	submodule = log
+

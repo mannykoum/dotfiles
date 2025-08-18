@@ -9,11 +9,60 @@ A place for my dotfiles to call home
 
 ## Installation
 
+Clone the repo:
+
 ```bash
 git clone git@github.com:mannykoum/dotfiles.git
 cd dotfiles
-stow -t ~ *
 ```
+
+### Using the helper script (recommended)
+
+Install all packages (zsh, bash, git, nvim, tmux, starship, foot):
+
+```bash
+./install.sh all
+```
+
+Install a specific package:
+
+```bash
+./install.sh git         # only ~/.gitconfig
+./install.sh zsh         # ~/.zshrc, ~/.zsh_aliases, etc.
+./install.sh nvim        # ~/.config/nvim
+./install.sh tmux        # ~/.config/tmux
+./install.sh starship    # ~/.config/starship.toml
+./install.sh foot        # ~/.config/foot
+```
+
+Add `-v` for verbose output.
+
+### Manual GNU Stow usage
+
+If you prefer to run stow yourself, use the correct target per package:
+
+```bash
+# Home-dotfiles packages
+stow --dotfiles -t "$HOME" zsh
+stow --dotfiles -t "$HOME" bash
+stow --dotfiles -t "$HOME" git
+
+# XDG config packages
+stow -t "$HOME/.config/nvim" nvim
+stow -t "$HOME/.config/tmux" tmux
+stow -t "$HOME/.config"      starship
+stow -t "$HOME/.config/foot" foot
+```
+
+## Packages
+
+- zsh: links `~/.zshrc`, `~/.zsh_aliases` into `$HOME`.
+- bash: links `~/.bashrc`, `~/.bash_aliases`, `~/.bash_functions` into `$HOME`.
+- git: links `~/.gitconfig` into `$HOME`.
+- nvim: links Neovim config into `~/.config/nvim`.
+- tmux: links `tmux.conf` and bundled plugins into `~/.config/tmux`.
+- starship: links `starship.toml` into `~/.config`.
+- foot: links `foot.ini` into `~/.config/foot`.
 
 ### oh-my-zsh installation
 
@@ -52,7 +101,20 @@ directory:
 
 ## Uninstallation
 
+Using the helper script:
+
 ```bash
 cd dotfiles
-stow -t ~ -D *
+./install.sh -u all             # uninstall all
+./install.sh -u git             # uninstall only git
+```
+
+Manual with GNU Stow:
+
+```bash
+stow -D --dotfiles -t "$HOME" zsh bash git
+stow -D -t "$HOME/.config/nvim" nvim
+stow -D -t "$HOME/.config/tmux" tmux
+stow -D -t "$HOME/.config"      starship
+stow -D -t "$HOME/.config/foot" foot
 ```
