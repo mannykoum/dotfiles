@@ -31,7 +31,7 @@ export GEM_HOME="$HOME/.gem/ruby/3.0.0"
 
 # Rust sccache
 # export RUSTC_WRAPPER=sccache
-# Rust tools env sourcing
+# Rust environment
 source $HOME/.cargo/env
 
 # Default editor
