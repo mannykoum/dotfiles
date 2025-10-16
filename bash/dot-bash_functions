@@ -251,3 +251,42 @@ function pomo() {
         date '+%H:%M' && sleep "${sec:?}" && notify-send -u critical -t 0 -a pomo "${msg:?}"
     done
 }
+
+function frg2() {
+# Use fzf to ripgrep live in a directory recursively
+dir="${1:-.}"
+shift
+args="$*"
+rg --files "$dir" | fzf --prompt="rg $args > " --preview="rg --color=always $args {} | head -500" --bind "enter:execute(rg --color=always $args {} | less -R)"
+}
+
+# fuzzy ripgrep -> fzf preview -> open at line (nvim/vim, VS Code, nano)
+frg() {
+  local editor="${VISUAL:-${EDITOR:-nvim}}"
+
+  local sel
+  sel="$(rg --ignore-case --color=always --line-number --no-heading "$@" \
+    | fzf --ansi \
+          --color='hl:-1:underline,hl+:-1:underline:reverse' \
+          --delimiter=':' \
+          --preview "bat --color=always {1} --theme='Solarized (light)' --highlight-line {2}" \
+          --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')" || return
+
+  # Parse "file:line:..."
+  local file line rest
+  file="${sel%%:*}"
+  rest="${sel#*:}"
+  line="${rest%%:*}"
+
+  # Normalize program name (handles things like "code -w")
+  local edbase; edbase="$(basename "${editor%% *}")"
+
+  case "$edbase" in
+    nvim|vim)   eval "$editor +$line -- ${(q)file}" ;;
+    code|code-insiders)
+                eval "$editor -g ${(q)file}:$line" ;;
+    nano)       eval "$editor +$line ${(q)file}" ;;
+    *)          eval "$editor ${(q)file}" ;; # fallback
+  esac
+}
+
