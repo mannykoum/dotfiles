@@ -124,7 +124,7 @@ export ARENA_ROOT=~/ROS/ArenaSDK_Linux_x64
 export ARENA_CONFIG_ROOT=~/ROS/arena_camera_ros/catkin_ws
 
 # Config file paths
-CONF="/home/mannykoum/.config"
+CONF="$HOME/.config"
 export NVIM_CONFIG="$CONF/nvim/init.lua"
 export NVIM_CONFIG=$(readlink -f $NVIM_CONFIG)
 export TMUX_CONFIG="$CONF/tmux/tmux.conf"
@@ -207,3 +207,7 @@ eval "$(zoxide init zsh)"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Bob path if bob is installed
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+
