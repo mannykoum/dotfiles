@@ -28,4 +28,5 @@
 	recurse = true
 [diff]
 	submodule = log
-
+[init]
+	defaultBranch = main
