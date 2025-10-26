@@ -17,6 +17,8 @@ These packages are used by specific stow groups. Install only what you need:
 - Tmux: required for the `tmux` package.
 - Starship: required for the `starship` package.
 - foot terminal: required for the `foot` package.
+- fzf: fuzzy finder used in some shell aliases/functions.
+  - `git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install`
 
 ## Installation
 
