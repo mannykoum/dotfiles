@@ -30,3 +30,5 @@
 	submodule = log
 [init]
 	defaultBranch = main
+[safe]
+	directory = /mnt/data/backups_infinet/Google-Calendar-20260127/calendartakeout/Takeout/Calendar
