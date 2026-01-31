@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-List top-level packages you installed via APT, Snap, Pip, or Cargo,
+List top-level packages you installed via APT, Snap, Pip, Cargo, Pacman, or Yay,
 sorted by most-recent install/upgrade time, with optional CSV/JSON output
 and version inclusion.
 
 Usage:
-  python3 list_installed_packages.py --manager {apt,snap,pip,cargo,all} \
-      [--format {table,csv,json}] [--tz-local] [--no-tz] [--limit N]
+  python3 list_installed_packages.py --manager {apt,snap,pip,cargo,pacman,yay,all} \
+      [--format {table,csv,json}] [--tz-local] [--no-tz] [--limit N] [--include-foreign]
 
 Examples:
   # All managers, pretty table (default)
@@ -30,7 +30,8 @@ Notes:
 - Cargo crates are those installed via `cargo install`. Time is approximated by the mtime of binaries
   in ~/.cargo/bin (latest among a crate's bin files).
 
-Requires: python3.8+, coreutils, apt/dpkg (for apt), snapd (for snap), pip, cargo as applicable.
+Requires: python3.8+, coreutils, apt/dpkg (for apt), snapd (for snap), pip, cargo,
+pacman (for pacman/yay) as applicable.
 """
 
 import argparse
@@ -39,6 +40,7 @@ import os
 import re
 import subprocess
 from datetime import datetime, timezone
+import time
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional
 
@@ -252,6 +254,87 @@ def cargo_rows() -> List[Row]:
     return rows
 
 
+# ------------------------- P A C M A N / Y A Y -----------------------------
+
+def pacman_version_map() -> Dict[str, str]:
+    versions: Dict[str, str] = {}
+    r = run("pacman -Q")
+    if r.returncode != 0:
+        return versions
+    for line in r.stdout.splitlines():
+        if not line.strip():
+            continue
+        try:
+            pkg, ver = line.split(None, 1)
+            versions[pkg] = ver.strip()
+        except ValueError:
+            continue
+    return versions
+
+
+def pacman_last_action_times() -> Dict[str, int]:
+    log_path = "/var/log/pacman.log"
+    if not os.path.exists(log_path):
+        return {}
+
+    times: Dict[str, int] = {}
+    with open(log_path, "r", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            # Examples:
+            # [2025-01-02T13:04:00+0000] [ALPM] installed ripgrep (14.1.0-1)
+            # [2025-01-02 13:05] [ALPM] upgraded ripgrep (14.1.0-1 -> 14.1.1-1)
+            m = re.match(
+                r"^\[([^\]]+)\]\s+\[ALPM\]\s+(installed|upgraded|reinstalled|downgraded)\s+(\S+)\s",
+                line,
+            )
+            if not m:
+                continue
+            dt_str = m.group(1)
+            pkg = m.group(3)
+            ts = parse_any_datetime_to_epoch(dt_str)
+            if ts is None:
+                continue
+            if pkg not in times or ts > times[pkg]:
+                times[pkg] = ts
+    return times
+
+
+def pacman_rows(include_foreign: bool) -> List[Row]:
+    rows: List[Row] = []
+    r = run("pacman -Qqe")
+    if r.returncode != 0:
+        return rows
+    explicit = [line.strip() for line in r.stdout.splitlines() if line.strip()]
+    if include_foreign:
+        r2 = run("pacman -Qqm")
+        if r2.returncode == 0:
+            explicit.extend(line.strip() for line in r2.stdout.splitlines() if line.strip())
+    versions = pacman_version_map()
+    times = pacman_last_action_times()
+    for pkg in sorted(set(explicit)):
+        ts = times.get(pkg)
+        if ts is None:
+            continue
+        rows.append((ts, pkg, versions.get(pkg, ""), "pacman"))
+    return rows
+
+
+def yay_rows() -> List[Row]:
+    rows: List[Row] = []
+    r = run("pacman -Qqm")
+    if r.returncode != 0:
+        return rows
+    foreign = [line.strip() for line in r.stdout.splitlines() if line.strip()]
+    versions = pacman_version_map()
+    times = pacman_last_action_times()
+    for pkg in foreign:
+        ts = times.get(pkg)
+        if ts is None:
+            continue
+        rows.append((ts, pkg, versions.get(pkg, ""), "yay"))
+    return rows
+
+
 # ------------------------- F O R M A T S -----------------------------------
 
 def sort_rows(rows: List[Row]) -> List[Row]:
@@ -304,7 +387,7 @@ def main():
     ap.add_argument(
         "--manager",
         "-m",
-        choices=["apt", "snap", "pip", "cargo", "all"],
+        choices=["apt", "snap", "pip", "cargo", "pacman", "yay", "all"],
         default="all",
         help="Which package ecosystem to query",
     )
@@ -316,6 +399,11 @@ def main():
         help="Output format",
     )
     ap.add_argument("--limit", type=int, default=0, help="Show only the N most recent entries")
+    ap.add_argument(
+        "--include-foreign",
+        action="store_true",
+        help="When using pacman (or all), include foreign/AUR packages in pacman output",
+    )
     tz = ap.add_mutually_exclusive_group()
     tz.add_argument("--tz-local", dest="local_tz", action="store_true", help="Use local time (default)")
     tz.add_argument("--no-tz", dest="local_tz", action="store_false", help="Use UTC time")
@@ -332,6 +420,10 @@ def main():
         all_rows.extend(pip_rows())
     if args.manager in ("cargo", "all"):
         all_rows.extend(cargo_rows())
+    if args.manager in ("pacman", "all"):
+        all_rows.extend(pacman_rows(args.include_foreign))
+    if args.manager in ("yay", "all"):
+        all_rows.extend(yay_rows())
 
     # Apply limit after sorting
     all_rows = sort_rows(all_rows)

@@ -211,3 +211,5 @@ export NVM_DIR="$HOME/.nvm"
 # Bob path if bob is installed
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 
+eval "$(uvx --generate-shell-completion zsh)"
+eval "$(uv generate-shell-completion zsh)"
