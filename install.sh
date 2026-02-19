@@ -10,7 +10,7 @@ show_help() {
     echo "  -u        Uninstall the specified dotfiles package(s)."
     echo
     echo "Arguments:"
-    echo "  package   The name of the dotfiles package to install or uninstall. Can be 'zsh', 'bash', 'git', 'nvim', 'tmux', 'starship', 'foot', or 'all'."
+    echo "  package   The name of the dotfiles package to install or uninstall. Can be 'zsh', 'bash', 'git', 'nvim', 'tmux', 'starship', 'foot', 'hypr', or 'all'."
     echo
     echo "Example:"
     echo "  $0 -v -u all     Uninstall all dotfiles packages with verbose output."
@@ -78,6 +78,7 @@ for package in "$@"; do
         manage_package "tmux" "$HOME/.config/tmux"
         manage_package "starship" "$HOME/.config"
         manage_package "foot" "$HOME/.config/foot"
+        manage_package "hypr" "$HOME/.config/hypr"
         break
     else
         case $package in
@@ -98,6 +99,9 @@ for package in "$@"; do
                 ;;
             foot )
                 manage_package "$package" "$HOME/.config/foot"
+                ;;
+            hypr )
+                manage_package "$package" "$HOME/.config/hypr"
                 ;;
             * )
                 echo "Unknown package: $package" >&2
