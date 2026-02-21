@@ -183,7 +183,7 @@ source $ZSH/oh-my-zsh.sh
 [ -f $HOME/programs/z/z.sh ] && . $HOME/programs/z/z.sh
 
 # fzf keybindings
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source <(fzf --zsh)
 
 # Starship prompt
 eval "$(starship init zsh)"
@@ -192,6 +192,30 @@ eval "$(starship init zsh)"
 if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
     export WGPU_BACKEND="vulkan"
 fi
+
+# Hyprland: ensure hyprctl points at the active instance socket
+_hypr_set_sig() {
+    local base="/run/user/${UID}/hypr"
+    local sock
+    sock=$(ls -t "$base"/*/.socket.sock 2>/dev/null | head -n 1)
+    if [ -n "$sock" ]; then
+        export HYPRLAND_INSTANCE_SIGNATURE
+        HYPRLAND_INSTANCE_SIGNATURE="$(basename "$(dirname "$sock")")"
+        return 0
+    fi
+    return 1
+}
+
+if [ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+    _hypr_set_sig || true
+fi
+
+hyprctl() {
+    if [ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || [ ! -S "/run/user/${UID}/hypr/${HYPRLAND_INSTANCE_SIGNATURE}/.socket.sock" ]; then
+        _hypr_set_sig || true
+    fi
+    command hyprctl "$@"
+}
 
 # Check for essential tools
 if ! command -v fd &> /dev/null && ! command -v fdfind &> /dev/null; then
