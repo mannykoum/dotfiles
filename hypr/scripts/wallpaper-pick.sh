@@ -2,9 +2,15 @@
 set -euo pipefail
 
 base_dir="$HOME/.config/hypr/wallpapers"
+apply_script="$HOME/.config/hypr/scripts/wallpaper-apply.sh"
 
 if ! command -v walker >/dev/null 2>&1; then
   echo "walker is not installed"
+  exit 1
+fi
+
+if [ ! -x "$apply_script" ]; then
+  echo "Missing executable apply script: $apply_script"
   exit 1
 fi
 
@@ -25,9 +31,9 @@ if [ ${#files[@]} -eq 0 ]; then
   exit 1
 fi
 
-menu_list=$(printf '%s\n' "${files[@]}" | sed "s#^$base_dir/##")
+menu_list="$(printf '%s\n' "${files[@]}" | sed "s#^$base_dir/##")"
+selection="$(printf '%s\n' "$menu_list" | walker --dmenu --placeholder "Pick wallpaper")"
 
-selection=$(printf '%s\n' "$menu_list" | walker --dmenu --placeholder "Pick wallpaper (stills + GIFs)")
 if [ -z "${selection:-}" ]; then
   exit 0
 fi
@@ -38,7 +44,6 @@ if [ ! -f "$wallpaper" ]; then
   exit 1
 fi
 
-swww img "$wallpaper" \
-  --transition-type random \
-  --transition-duration 1.2 \
-  --transition-fps 60
+# walker v2.14.2 dmenu currently reads plain text lines only, so it cannot render
+# per-item thumbnail icons from this script path.
+"$apply_script" "$wallpaper"
