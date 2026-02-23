@@ -79,6 +79,7 @@ for package in "$@"; do
         manage_package "starship" "$HOME/.config"
         manage_package "foot" "$HOME/.config/foot"
         manage_package "hypr" "$HOME/.config/hypr"
+        manage_package "waybar" "$HOME/.config/waybar"
         break
     else
         case $package in
@@ -102,6 +103,7 @@ for package in "$@"; do
                 ;;
             hypr )
                 manage_package "$package" "$HOME/.config/hypr"
+                manage_package "waybar" "$HOME/.config/waybar"
                 ;;
             * )
                 echo "Unknown package: $package" >&2
