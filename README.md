@@ -65,6 +65,7 @@ stow -t "$HOME/.config/nvim" nvim
 stow -t "$HOME/.config/tmux" tmux
 stow -t "$HOME/.config"      starship
 stow -t "$HOME/.config/foot" foot
+stow -t "$HOME/.config/hypr" hypr
 ```
 
 ## Packages

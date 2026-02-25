@@ -52,18 +52,18 @@ rust_tool_packages=(
 )
 
 # --- Mapping: Cargo Package Name to Command Name (if different) ---
-declare -A tool_command_map
+typeset -A tool_command_map
 tool_command_map=(
-  [ripgrep]="rg"
-  [fd-find]="fd"
-  [du-dust]="dust"
-  [dua-cli]="dua"
-  [yazi-fm]="yazi"
-  [helix]="hx"
-  [git-delta]="delta"
-  [ripgrep_all]="rga"
-  [bob-nvim]="bob"
-  [rtx-cli]="rtx"
+  "ripgrep" "rg"
+  "fd-find" "fd"
+  "du-dust" "dust"
+  "dua-cli" "dua"
+  "yazi-fm" "yazi"
+  "helix" "hx"
+  "git-delta" "delta"
+  "ripgrep_all" "rga"
+  "bob-nvim" "bob"
+  "rtx-cli" "rtx"
 )
 # For 'bat', special handling for 'bat' vs 'batcat' is in check_and_install_tool.
 # For 'cargo-info', special handling for 'cargo help info' is in check_and_install_tool.
@@ -79,6 +79,77 @@ print_message() {
 
 command_exists() {
   command -v "$1" >/dev/null 2>&1
+}
+
+has_cargo_binstall() {
+  if command_exists "cargo-binstall"; then
+    return 0
+  fi
+  cargo binstall --version >/dev/null 2>&1
+}
+
+ensure_cargo_binstall() {
+  if has_cargo_binstall; then
+    print_message "'cargo-binstall' is already available."
+    return 0
+  fi
+
+  print_message "'cargo-binstall' is not installed. Installing it first..."
+  if cargo install --locked cargo-binstall; then
+    print_message "'cargo-binstall' installed successfully."
+    return 0
+  elif cargo install cargo-binstall; then
+    print_message "'cargo-binstall' installed successfully."
+    return 0
+  fi
+
+  print_message "Failed to install 'cargo-binstall'. Will continue with cargo build installs."
+  return 1
+}
+
+install_with_binstall() {
+  local tool_package_name="$1"
+  local -a binstall_args
+  binstall_args=("-y")
+
+  # yazi upgrades should replace existing binary.
+  if [[ "$tool_package_name" == "yazi-fm" ]]; then
+    binstall_args+=("--force")
+  fi
+
+  if cargo binstall --locked "${binstall_args[@]}" "$tool_package_name"; then
+    return 0
+  elif cargo binstall "${binstall_args[@]}" "$tool_package_name"; then
+    return 0
+  fi
+  return 1
+}
+
+install_with_cargo_build() {
+  local tool_package_name="$1"
+  local -a cargo_args
+  cargo_args=()
+
+  if [[ "$tool_package_name" == "helix" ]]; then
+    if cargo install --locked --git https://github.com/helix-editor/helix helix-term; then
+      return 0
+    elif cargo install --git https://github.com/helix-editor/helix helix-term; then
+      return 0
+    fi
+    return 1
+  fi
+
+  # yazi upgrades should replace existing binary.
+  if [[ "$tool_package_name" == "yazi-fm" ]]; then
+    cargo_args+=("--force")
+  fi
+
+  if cargo install --locked "${cargo_args[@]}" "$tool_package_name"; then
+    return 0
+  elif cargo install "${cargo_args[@]}" "$tool_package_name"; then
+    return 0
+  fi
+  return 1
 }
 
 check_and_install_tool() {
@@ -120,7 +191,21 @@ check_and_install_tool() {
   fi
 
   print_message "Installing '$tool_package_name' (provides: $display_command_name)..."
-  if cargo install "$tool_package_name" --locked; then
+  local install_succeeded=false
+
+  if [[ "$use_binstall" == "true" ]]; then
+    if install_with_binstall "$tool_package_name"; then
+      install_succeeded=true
+    else
+      print_message "cargo-binstall failed for '$tool_package_name'. Falling back to cargo build install."
+    fi
+  fi
+
+  if ! $install_succeeded && install_with_cargo_build "$tool_package_name"; then
+    install_succeeded=true
+  fi
+
+  if $install_succeeded; then
     print_message "'$tool_package_name' installed successfully."
     # Special instructions after install
     if [[ "$tool_package_name" == "starship" ]]; then
@@ -145,8 +230,6 @@ check_and_install_tool() {
     if [[ "$tool_package_name" == "starship" || "$tool_package_name" == "zoxide" || "$tool_package_name" == "rtx-cli" ]]; then
         echo "Then, source your .zshrc (source ~/.zshrc) or open a new terminal."
     fi
-  elif cargo install "$tool_package_name"; then
-    print_message "'$tool_package_name' installed successfully."
   else
     print_message "Failed to install '$tool_package_name'. Check for errors."
     return 2 # Failed
@@ -160,6 +243,11 @@ if ! command_exists "cargo"; then
   print_message "Cargo is not installed. Please install Rust and Cargo first."
   echo "Visit https://www.rust-lang.org/tools/install for instructions."
   exit 1
+fi
+
+use_binstall="false"
+if ensure_cargo_binstall; then
+  use_binstall="true"
 fi
 
 interactive_mode="true"
@@ -261,4 +349,3 @@ fi
 
 print_message "Script finished."
 echo "Remember to source your ~/.zshrc or open a new terminal if any tools required shell configuration (e.g., starship, zoxide, rtx)."
-
