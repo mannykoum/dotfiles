@@ -1,1 +1,15 @@
-../bash/dot-bash_functions
+#!/usr/bin/env zsh
+
+# Keep shared shell helpers in one place while leaving room for zsh-only
+# functions in this file.
+_zsh_functions_dir="${${(%):-%N}:P:h}"
+
+if [ -f "$HOME/.bash_functions" ]; then
+    source "$HOME/.bash_functions"
+elif [ -f "$_zsh_functions_dir/../bash/dot-bash_functions" ]; then
+    source "$_zsh_functions_dir/../bash/dot-bash_functions"
+fi
+
+unset _zsh_functions_dir
+
+# Add zsh-specific functions below.
