@@ -197,7 +197,9 @@ fi
 _hypr_set_sig() {
     local base="/run/user/${UID}/hypr"
     local sock
-    sock=$(ls -t "$base"/*/.socket.sock 2>/dev/null | head -n 1)
+    local -a socks
+    socks=("$base"/*/.socket.sock(Nom))
+    sock="${socks[1]}"
     if [ -n "$sock" ]; then
         export HYPRLAND_INSTANCE_SIGNATURE
         HYPRLAND_INSTANCE_SIGNATURE="$(basename "$(dirname "$sock")")"
@@ -237,3 +239,9 @@ export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 
 eval "$(uvx --generate-shell-completion zsh)"
 eval "$(uv generate-shell-completion zsh)"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/mannykoum/programs/google-cloud-sdk/path.zsh.inc' ]; then . '/home/mannykoum/programs/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/mannykoum/programs/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/mannykoum/programs/google-cloud-sdk/completion.zsh.inc'; fi
