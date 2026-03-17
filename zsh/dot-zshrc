@@ -183,7 +183,8 @@ source $ZSH/oh-my-zsh.sh
 [ -f $HOME/programs/z/z.sh ] && . $HOME/programs/z/z.sh
 
 # fzf keybindings
-source <(fzf --zsh)
+# source <(fzf --zsh)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Starship prompt
 eval "$(starship init zsh)"
