@@ -52,18 +52,17 @@ rust_tool_packages=(
 )
 
 # --- Mapping: Cargo Package Name to Command Name (if different) ---
-declare -A tool_command_map
-tool_command_map=(
-  [ripgrep]="rg"
-  [fd-find]="fd"
-  [du-dust]="dust"
-  [dua-cli]="dua"
-  [yazi-fm]="yazi"
-  [helix]="hx"
-  [git-delta]="delta"
-  [ripgrep_all]="rga"
-  [bob-nvim]="bob"
-  [rtx-cli]="rtx"
+typeset -A tool_command_map=(
+  ripgrep rg
+  fd-find fd
+  du-dust dust
+  dua-cli dua
+  yazi-fm yazi
+  helix hx
+  git-delta delta
+  ripgrep_all rga
+  bob-nvim bob
+  rtx-cli rtx
 )
 # For 'bat', special handling for 'bat' vs 'batcat' is in check_and_install_tool.
 # For 'cargo-info', special handling for 'cargo help info' is in check_and_install_tool.
@@ -261,4 +260,3 @@ fi
 
 print_message "Script finished."
 echo "Remember to source your ~/.zshrc or open a new terminal if any tools required shell configuration (e.g., starship, zoxide, rtx)."
-
