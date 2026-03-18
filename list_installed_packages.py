@@ -272,6 +272,28 @@ def pacman_version_map() -> Dict[str, str]:
     return versions
 
 
+def parse_pacman_datetime_to_epoch(dt_str: str) -> Optional[int]:
+    """
+    Parse pacman log timestamps, including naive forms like 'YYYY-MM-DD HH:MM'
+    and 'YYYY-MM-DD HH:MM:SS', treating naive times as local time.
+    """
+    # First, try the generic parser, which handles ISO 8601 with timezone.
+    ts = parse_any_datetime_to_epoch(dt_str)
+    if ts is not None:
+        return ts
+
+    # Fallback for pacman-style naive timestamps (no timezone).
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+        try:
+            dt = datetime.strptime(dt_str, fmt)
+        except ValueError:
+            continue
+        # time.mktime() interprets the naive datetime as local time.
+        return int(time.mktime(dt.timetuple()))
+
+    return None
+
+
 def pacman_last_action_times() -> Dict[str, int]:
     log_path = "/var/log/pacman.log"
     if not os.path.exists(log_path):
@@ -291,7 +313,7 @@ def pacman_last_action_times() -> Dict[str, int]:
                 continue
             dt_str = m.group(1)
             pkg = m.group(3)
-            ts = parse_any_datetime_to_epoch(dt_str)
+            ts = parse_pacman_datetime_to_epoch(dt_str)
             if ts is None:
                 continue
             if pkg not in times or ts > times[pkg]:
