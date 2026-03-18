@@ -202,6 +202,40 @@ if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
     export WGPU_BACKEND="vulkan"
 fi
 
+# Hyprland: ensure hyprctl points at the active instance socket
+_hypr_set_sig() {
+    local base="/run/user/${UID}/hypr"
+    local sock
+    local -a socks
+    socks=("$base"/*/.socket.sock(Nom))
+    sock="${socks[1]}"
+    if [ -n "$sock" ]; then
+        export HYPRLAND_INSTANCE_SIGNATURE
+        HYPRLAND_INSTANCE_SIGNATURE="$(basename "$(dirname "$sock")")"
+        return 0
+    fi
+    return 1
+}
+
+if [ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+    _hypr_set_sig || true
+fi
+
+hyprctl() {
+    if [ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || [ ! -S "/run/user/${UID}/hypr/${HYPRLAND_INSTANCE_SIGNATURE}/.socket.sock" ]; then
+        _hypr_set_sig || true
+    fi
+    command hyprctl "$@"
+}
+
+# Check for essential tools
+if ! command -v fd &> /dev/null && ! command -v fdfind &> /dev/null; then
+    echo "fd not found, consider installing: sudo apt install fd-find"
+fi
+if ! command -v rg &> /dev/null; then
+    echo "ripgrep not found, consider installing: sudo apt install ripgrep"
+fi
+
 # Zoxide setup
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init zsh)"
@@ -222,3 +256,9 @@ fi
 if command -v uv &> /dev/null; then
     eval "$(uv generate-shell-completion zsh)"
 fi
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/mannykoum/programs/google-cloud-sdk/path.zsh.inc' ]; then . '/home/mannykoum/programs/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/mannykoum/programs/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/mannykoum/programs/google-cloud-sdk/completion.zsh.inc'; fi
