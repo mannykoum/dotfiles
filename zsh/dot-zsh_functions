@@ -13,3 +13,87 @@ fi
 unset _zsh_functions_dir
 
 # Add zsh-specific functions below.
+
+# Enhanced fuzzy ripgrep with multi-select and optional initial query
+# Usage: frg [search-pattern]
+#   - With pattern: searches for pattern and shows results in fzf
+#   - Without pattern: start with empty fzf, type to search interactively
+#   - TAB to multi-select, ENTER to open in editor
+frg() {
+  local editor="${VISUAL:-${EDITOR:-nvim}}"
+  local initial_query="${1:-}"
+  local rg_prefix="rg --column --line-number --no-heading --color=always --smart-case"
+  
+  # If no initial query provided, use interactive mode with reload binding
+  if [[ -z "$initial_query" ]]; then
+    local selections
+    selections="$(
+      FZF_DEFAULT_COMMAND="$rg_prefix ''" \
+        fzf --ansi \
+            --disabled \
+            --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
+            --bind "ctrl-f:unbind(change,ctrl-f)+change-prompt(2. fzf> )+enable-search+clear-query" \
+            --color='hl:-1:underline,hl+:-1:underline:reverse' \
+            --delimiter=':' \
+            --prompt='1. ripgrep> ' \
+            --preview='bat --color=always {1} --highlight-line {2}' \
+            --preview-window='up,60%,border-bottom,+{2}+3/3,~3' \
+            --multi \
+            --bind='tab:toggle+down' \
+            --header='TAB: select multiple | ENTER: open in editor'
+    )" || return
+  else
+    # With initial query: standard search
+    local selections
+    selections="$(
+      $rg_prefix "$initial_query" \
+        | fzf --ansi \
+              --color='hl:-1:underline,hl+:-1:underline:reverse' \
+              --delimiter=':' \
+              --preview="bat --color=always {1} --highlight-line {2}" \
+              --preview-window='up,60%,border-bottom,+{2}+3/3,~3' \
+              --multi \
+              --bind='tab:toggle+down' \
+              --header='TAB: select multiple | ENTER: open in editor'
+    )" || return
+  fi
+
+  [[ -z "$selections" ]] && return
+
+  # Parse selections and build file:line arguments
+  local -a files
+  local edbase; edbase="$(basename "${editor%% *}")"
+  
+  while IFS= read -r sel; do
+    local file line
+    file="${sel%%:*}"
+    local rest="${sel#*:}"
+    line="${rest%%:*}"
+    
+    case "$edbase" in
+      nvim|vim)
+        files+=("${(q)file}" "+$line")
+        ;;
+      code|code-insiders)
+        files+=("-g" "${(q)file}:$line")
+        ;;
+      nano)
+        files+=("+$line" "${(q)file}")
+        ;;
+      *)
+        files+=("${(q)file}")
+        ;;
+    esac
+  done <<< "$selections"
+
+  # Open editor with all selected files
+  case "$edbase" in
+    nvim|vim)
+      # For nvim/vim, open first file at line, rest as buffers
+      eval "$editor ${files[1]} ${files[2]} -c 'argadd ${files[3,-1]}'"
+      ;;
+    *)
+      eval "$editor ${files[@]}"
+      ;;
+  esac
+}
