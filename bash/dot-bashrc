@@ -348,3 +348,13 @@ eval "$(fzf --bash)"
 if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then
     export WGPU_BACKEND="vulkan"
 fi
+
+# Auto-switch to zsh for interactive shells
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
+
+if [ -z "${ZSH_VERSION:-}" ] && [ -x /usr/bin/zsh ]; then
+  exec /usr/bin/zsh -l
+fi

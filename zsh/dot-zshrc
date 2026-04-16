@@ -184,6 +184,8 @@ fi
 # Source aliases and functions
 [ -f "$HOME/.zsh_aliases" ] && source "$HOME/.zsh_aliases"
 [ -f "$HOME/.zsh_functions" ] && source "$HOME/.zsh_functions"
+# if ~/.zfunc exists add it to the zsh fpath for completions
+fpath+=$HOME/.zfunc
 
 # z - jump around
 [ -f "$HOME/programs/z/z.sh" ] && source "$HOME/programs/z/z.sh"
