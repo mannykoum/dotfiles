@@ -80,26 +80,18 @@ for package in "$@"; do
         manage_package "foot" "$HOME/.config/foot"
         manage_package "hypr" "$HOME/.config/hypr"
         manage_package "waybar" "$HOME/.config/waybar"
+        manage_package "himalaya" "$HOME/.config/himalaya"
         break
     else
         case $package in
-            zsh )
-                manage_package "zsh" "$HOME"
+            zsh | bash | git )
+                manage_package "$package" "$HOME"
                 ;;
-            bash )
-                manage_package "bash" "$HOME"
-                ;;
-            git )
-                manage_package "git" "$HOME"
-                ;;
-            nvim | tmux )
+            nvim | tmux | himalaya | foot )
                 manage_package "$package" "$HOME/.config/$package"
                 ;;
             starship )
                 manage_package "$package" "$HOME/.config"
-                ;;
-            foot )
-                manage_package "$package" "$HOME/.config/foot"
                 ;;
             hypr )
                 manage_package "$package" "$HOME/.config/hypr"
