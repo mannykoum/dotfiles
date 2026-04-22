@@ -1,0 +1,23 @@
+[accounts.work]
+default = true
+email = "manos@infiniteorbits.io"
+display-name = "manos"
+downloads-dir = "/home/mannykoum/Downloads"
+backend.type = "imap"
+backend.host = "imap.gmail.com"
+backend.port = 993
+backend.login = "manos@infiniteorbits.io"
+backend.encryption.type = "tls"
+backend.auth.type = "password"
+backend.auth.keyring = "work-imap-passwd"
+folder.aliases.sent = "[Gmail]/Sent Mail"
+folder.aliases.drafts = "[Gmail]/Drafts"
+folder.aliases.trash = "[Gmail]/Trash"
+folder.aliases.inbox = "INBOX"
+message.send.backend.type = "smtp"
+message.send.backend.host = "smtp.gmail.com"
+message.send.backend.port = 465
+message.send.backend.login = "manos@infiniteorbits.io"
+message.send.backend.encryption.type = "tls"
+message.send.backend.auth.type = "password"
+message.send.backend.auth.keyring = "work-smtp-passwd"
