@@ -49,6 +49,8 @@ rust_tool_packages=(
   "kondo"         # Project artifact cleaner
   "bob-nvim"      # Neovim version manager
   "rtx-cli"       # Polyglot version manager (now superseded by 'mise')
+  "cargo-binstall" # Cargo binary installer (used by this script for faster installs when available)
+  "himalaya"       # Terminal email client
 )
 
 # --- Mapping: Cargo Package Name to Command Name (if different) ---
