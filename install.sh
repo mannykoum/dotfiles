@@ -81,13 +81,14 @@ for package in "$@"; do
         manage_package "hypr" "$HOME/.config/hypr"
         manage_package "waybar" "$HOME/.config/waybar"
         manage_package "himalaya" "$HOME/.config/himalaya"
+        manage_package "aerc" "$HOME/.config/aerc"
         break
     else
         case $package in
             zsh | bash | git )
                 manage_package "$package" "$HOME"
                 ;;
-            nvim | tmux | himalaya | foot )
+            nvim | tmux | himalaya | foot | aerc )
                 manage_package "$package" "$HOME/.config/$package"
                 ;;
             starship )
