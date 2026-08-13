@@ -25,13 +25,13 @@ These packages are used by specific stow groups. Install only what you need:
 Clone the repo:
 
 ```bash
-git clone git@github.com:mannykoum/dotfiles.git
+git clone --recurse-submodules git@github.com:mannykoum/dotfiles.git
 cd dotfiles
 ```
 
 ### Using the helper script (recommended)
 
-Install all packages (zsh, bash, git, nvim, tmux, starship, foot):
+Install all packages (including Pi configuration):
 
 ```bash
 ./install.sh all
@@ -46,6 +46,7 @@ Install a specific package:
 ./install.sh tmux        # ~/.config/tmux
 ./install.sh starship    # ~/.config/starship.toml
 ./install.sh foot        # ~/.config/foot
+./install.sh pi          # ~/.pi/agent/settings.json and ~/.agents/skills
 ```
 
 Add `-v` for verbose output.
@@ -59,6 +60,7 @@ If you prefer to run stow yourself, use the correct target per package:
 stow --dotfiles -t "$HOME" zsh
 stow --dotfiles -t "$HOME" bash
 stow --dotfiles -t "$HOME" git
+stow --dotfiles -t "$HOME" pi
 
 # XDG config packages
 stow -t "$HOME/.config/nvim" nvim
@@ -77,6 +79,10 @@ stow -t "$HOME/.config/hypr" hypr
 - tmux: links `tmux.conf` and bundled plugins into `~/.config/tmux`.
 - starship: links `starship.toml` into `~/.config`.
 - foot: links `foot.ini` into `~/.config/foot`.
+- pi: private `pi-config` submodule linking global Pi settings and skills into
+  `~/.pi/agent/` and `~/.agents/`. Pi installs missing pinned packages from
+  `settings.json`; credentials, sessions, package caches, model catalogs, and
+  project trust decisions remain machine-local.
 
 ### oh-my-zsh installation
 
@@ -126,7 +132,7 @@ cd dotfiles
 Manual with GNU Stow:
 
 ```bash
-stow -D --dotfiles -t "$HOME" zsh bash git
+stow -D --dotfiles -t "$HOME" zsh bash git pi
 stow -D -t "$HOME/.config/nvim" nvim
 stow -D -t "$HOME/.config/tmux" tmux
 stow -D -t "$HOME/.config"      starship

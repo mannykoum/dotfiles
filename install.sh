@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+DOTFILES_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
 # Function to display help
 show_help() {
     echo "Usage: $0 [-h] [-v] [-u] package1 [package2 ...]"
@@ -10,7 +12,7 @@ show_help() {
     echo "  -u        Uninstall the specified dotfiles package(s)."
     echo
     echo "Arguments:"
-    echo "  package   The name of the dotfiles package to install or uninstall. Can be 'zsh', 'bash', 'git', 'nvim', 'tmux', 'starship', 'foot', 'hypr', or 'all'."
+    echo "  package   The name of the dotfiles package to install or uninstall. Can be 'zsh', 'bash', 'git', 'nvim', 'tmux', 'starship', 'foot', 'hypr', 'pi', or 'all'."
     echo
     echo "Example:"
     echo "  $0 -v -u all     Uninstall all dotfiles packages with verbose output."
@@ -49,23 +51,43 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# Initialize package submodules when installing from a non-recursive clone.
+ensure_submodule() {
+    local package=$1
+
+    if [ "$uninstall" -eq 0 ] &&
+       git -C "$DOTFILES_DIR" config --file .gitmodules --get-regexp '^submodule\..*\.path$' 2>/dev/null |
+           awk '{print $2}' | grep -Fqx -- "$package"; then
+        git -C "$DOTFILES_DIR" submodule update --init --recursive -- "$package"
+    fi
+}
+
 # Function to manage a package
 manage_package() {
     local package=$1
     local target_dir=$2
     local action="stowing"
-    local stow_cmd="stow --dotfiles"
+    local -a stow_cmd=(stow --dotfiles --dir "$DOTFILES_DIR")
 
-    if [ $uninstall -eq 1 ]; then
+    # Pi keeps credentials, sessions, and package caches beside linked config.
+    # Prevent Stow from folding ~/.pi or ~/.agents into repository symlinks.
+    if [ "$package" = "pi" ]; then
+        stow_cmd+=(--no-folding)
+    fi
+
+    if [ "$uninstall" -eq 1 ]; then
         action="unstowing"
-        stow_cmd="stow -D"
+        stow_cmd+=(-D)
+    else
+        ensure_submodule "$package"
     fi
 
-    if [ $verbose -eq 1 ]; then
+    if [ "$verbose" -eq 1 ]; then
         echo "$action $package into $target_dir"
+        stow_cmd+=(-v)
     fi
 
-    $stow_cmd ${verbose:+-v} -t "$target_dir" "$package"
+    "${stow_cmd[@]}" --target "$target_dir" "$package"
 }
 
 # Main logic
@@ -82,10 +104,11 @@ for package in "$@"; do
         manage_package "waybar" "$HOME/.config/waybar"
         manage_package "himalaya" "$HOME/.config/himalaya"
         manage_package "aerc" "$HOME/.config/aerc"
+        manage_package "pi" "$HOME"
         break
     else
         case $package in
-            zsh | bash | git )
+            zsh | bash | git | pi )
                 manage_package "$package" "$HOME"
                 ;;
             nvim | tmux | himalaya | foot | aerc )
