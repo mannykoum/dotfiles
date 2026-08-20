@@ -358,3 +358,4 @@ esac
 if [ -z "${ZSH_VERSION:-}" ] && [ -x /usr/bin/zsh ]; then
   exec /usr/bin/zsh -l
 fi
+export PATH=~/.npm-global/bin:$PATH
