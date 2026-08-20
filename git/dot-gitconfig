@@ -30,5 +30,8 @@
 	submodule = log
 [init]
 	defaultBranch = main
-[safe]
-	directory = /mnt/data/backups_infinet/Google-Calendar-20260127/calendartakeout/Takeout/Calendar
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
